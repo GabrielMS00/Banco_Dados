@@ -1,0 +1,315 @@
+PRAGMA foreign_keys = ON;
+
+-- Tabela Socio
+CREATE TABLE Socio (
+    rg INTEGER NOT NULL PRIMARY KEY,
+    participacao REAL NOT NULL,
+    nome TEXT NOT NULL
+);
+
+-- Tabela Agencia
+CREATE TABLE Agencia (
+    cnpj INTEGER NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    lucro INTEGER NOT NULL
+);
+
+-- Tabela Dono
+CREATE TABLE Dono (
+    rg INTEGER NOT NULL,
+    cnpj INTEGER NOT NULL,
+    PRIMARY KEY (rg, cnpj),
+    FOREIGN KEY (rg) REFERENCES Socio(rg)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    FOREIGN KEY (cnpj) REFERENCES Agencia(cnpj)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+-- Tabela Cliente
+CREATE TABLE Cliente (
+    cpf INTEGER NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    dt_cadastro DATE NOT NULL,
+    sexo TEXT NOT NULL
+);
+
+-- Tabela Dependente
+CREATE TABLE Dependente (
+    cpf_codependente INTEGER NOT NULL,
+    nome TEXT NOT NULL,
+    idade INTEGER NOT NULL,
+  	PRIMARY KEY (cpf_codependente, nome),
+    FOREIGN KEY (cpf_codependente) REFERENCES Cliente(cpf)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+-- Tabela Pacote
+CREATE TABLE Pacote (
+    id INTEGER NOT NULL PRIMARY KEY,
+    valor REAL NOT NULL,
+    qnt_dias INTEGER NOT NULL,
+    local TEXT NOT NULL
+);
+
+-- Tabela Vende
+CREATE TABLE Vende (
+    id_pacote INTEGER NOT NULL,
+    cpf INTEGER NOT NULL,
+    numero_nota INTEGER NOT NULL,
+    PRIMARY KEY (id_pacote, cpf),
+    FOREIGN KEY (id_pacote) REFERENCES Pacote(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    FOREIGN KEY (cpf) REFERENCES Cliente(cpf)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+-- Tabela Transfere
+CREATE TABLE Transfere (
+    cpf_transferidor INTEGER NOT NULL,
+    cpf_receptor INTEGER NOT NULL,
+    numero_transferencia INTEGER NOT NULL,
+    PRIMARY KEY (cpf_transferidor, cpf_receptor, numero_transferencia),
+    FOREIGN KEY (cpf_transferidor) REFERENCES Cliente(cpf)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    FOREIGN KEY (cpf_receptor) REFERENCES Cliente(cpf)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+-- Tabela Reserva
+CREATE TABLE Reserva (
+    id_reserva INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    id_pacote INTEGER NOT NULL,
+    horario INTEGER NOT NULL,
+    FOREIGN KEY (id_pacote) REFERENCES Pacote(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+-- Tabela Aero
+CREATE TABLE Aero (
+    id_reserva INTEGER NOT NULL PRIMARY KEY,
+    num_assento INTEGER NOT NULL,
+    tipo_assento TEXT NOT NULL,
+    campanhia_aerea TEXT NOT NULL,
+    FOREIGN KEY (id_reserva) REFERENCES Reserva(id_reserva)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+-- Tabela Passeio
+CREATE TABLE Passeio (
+    id_reserva INTEGER NOT NULL PRIMARY KEY,
+    local_saida TEXT NOT NULL,
+    FOREIGN KEY (id_reserva) REFERENCES Reserva(id_reserva)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+-- Tabela Hospedagem
+CREATE TABLE Hospedagem (
+    id_reserva INTEGER NOT NULL PRIMARY KEY,
+    local TEXT NOT NULL,
+    nome TEXT NOT NULL,
+    FOREIGN KEY (id_reserva) REFERENCES Reserva(id_reserva)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+INSERT INTO Socio (rg, participacao, nome) VALUES (101, 10.5, 'João Silva');
+INSERT INTO Socio (rg, participacao, nome) VALUES (102, 15.0, 'Maria Oliveira');
+INSERT INTO Socio (rg, participacao, nome) VALUES (103, 12.3, 'Pedro Santos');
+INSERT INTO Socio (rg, participacao, nome) VALUES (104, 8.7, 'Ana Lima');
+INSERT INTO Socio (rg, participacao, nome) VALUES (105, 7.2, 'Carlos Almeida');
+INSERT INTO Socio (rg, participacao, nome) VALUES (106, 9.8, 'Fernanda Costa');
+INSERT INTO Socio (rg, participacao, nome) VALUES (107, 13.6, 'Lucas Pereira');
+INSERT INTO Socio (rg, participacao, nome) VALUES (108, 11.1, 'Juliana Carvalho');
+INSERT INTO Socio (rg, participacao, nome) VALUES (109, 6.4, 'Rafael Silva');
+INSERT INTO Socio (rg, participacao, nome) VALUES (110, 14.0, 'Beatriz Souza');
+INSERT INTO Socio (rg, participacao, nome) VALUES (111, 10.0, 'Gabriel Rocha');
+INSERT INTO Socio (rg, participacao, nome) VALUES (112, 5.5, 'Patrícia Nogueira');
+INSERT INTO Socio (rg, participacao, nome) VALUES (113, 9.0, 'André Martins');
+INSERT INTO Socio (rg, participacao, nome) VALUES (114, 7.8, 'Camila Mendes');
+INSERT INTO Socio (rg, participacao, nome) VALUES (115, 8.0, 'Rodrigo Ferreira');
+
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1001, 'Agencia Centro', 50000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1002, 'Agencia Norte', 42000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1003, 'Agencia Sul', 53000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1004, 'Agencia Leste', 47000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1005, 'Agencia Oeste', 49000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1006, 'Agencia Central', 60000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1007, 'Agencia Jardim', 52000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1008, 'Agencia Planalto', 55000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1009, 'Agencia Paulista', 48000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1010, 'Agencia Pinheiros', 47000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1011, 'Agencia Morumbi', 49000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1012, 'Agencia Ibirapuera', 45000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1013, 'Agencia Consolação', 51000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1014, 'Agencia Liberdade', 50000);
+INSERT INTO Agencia (cnpj, nome, lucro) VALUES (1015, 'Agencia Santa Cruz', 54000);
+
+INSERT INTO Dono (rg, cnpj) VALUES (101, 1001);
+INSERT INTO Dono (rg, cnpj) VALUES (102, 1002);
+INSERT INTO Dono (rg, cnpj) VALUES (103, 1003);
+INSERT INTO Dono (rg, cnpj) VALUES (104, 1004);
+INSERT INTO Dono (rg, cnpj) VALUES (105, 1005);
+INSERT INTO Dono (rg, cnpj) VALUES (106, 1006);
+INSERT INTO Dono (rg, cnpj) VALUES (107, 1007);
+INSERT INTO Dono (rg, cnpj) VALUES (108, 1008);
+INSERT INTO Dono (rg, cnpj) VALUES (109, 1009);
+INSERT INTO Dono (rg, cnpj) VALUES (110, 1010);
+INSERT INTO Dono (rg, cnpj) VALUES (111, 1011);
+INSERT INTO Dono (rg, cnpj) VALUES (112, 1012);
+INSERT INTO Dono (rg, cnpj) VALUES (113, 1013);
+INSERT INTO Dono (rg, cnpj) VALUES (114, 1014);
+INSERT INTO Dono (rg, cnpj) VALUES (115, 1015);
+
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (1, 1500.50, 7, 'Rio de Janeiro');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (2, 2000.00, 10, 'Paris');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (3, 1800.75, 8, 'Nova York');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (4, 2200.30, 12, 'Londres');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (5, 1700.20, 9, 'Buenos Aires');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (6, 2500.60, 14, 'Tóquio');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (7, 1600.80, 6, 'São Paulo');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (8, 2100.90, 11, 'Berlim');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (9, 1400.25, 5, 'Lisboa');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (10, 2300.40, 13, 'Sidney');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (11, 1900.55, 10, 'Vancouver');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (12, 1700.90, 8, 'Madri');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (13, 2000.75, 9, 'Roma');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (14, 1500.30, 7, 'Amsterdã');
+INSERT INTO Pacote (id, valor, qnt_dias, local) VALUES (15, 2400.50, 15, 'Dubai');
+
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (101, 'Carlos Silva', '2024-11-01', 'M');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (102, 'Ana Santos', '2024-11-02', 'F');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (103, 'Marcos Pereira', '2024-11-03', 'M');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (104, 'Luciana Costa', '2024-11-04', 'F');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (105, 'Pedro Oliveira', '2024-11-05', 'M');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (106, 'Fernanda Lima', '2024-11-06', 'F');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (107, 'Roberto Souza', '2024-11-07', 'M');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (108, 'Patrícia Almeida', '2024-11-08', 'F');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (109, 'João Mendes', '2024-11-09', 'M');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (110, 'Aline Rocha', '2024-11-10', 'F');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (111, 'Ricardo Nogueira', '2024-11-11', 'M');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (112, 'Cláudia Tavares', '2024-11-12', 'F');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (113, 'Eduardo Fernandes', '2024-11-13', 'M');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (114, 'Mariana Ribeiro', '2024-11-14', 'F');
+INSERT INTO Cliente (cpf, nome, dt_cadastro, sexo) VALUES (115, 'Thiago Martins', '2024-11-15', 'M');
+
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (1, 101, 5001);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (2, 102, 5002);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (3, 103, 5003);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (4, 104, 5004);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (5, 105, 5005);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (6, 106, 5006);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (7, 107, 5007);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (8, 108, 5008);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (9, 109, 5009);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (10, 110, 5010);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (11, 111, 5011);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (12, 112, 5012);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (13, 113, 5013);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (14, 114, 5014);
+INSERT INTO Vende (id_pacote, cpf, numero_nota) VALUES (15, 115, 5015);
+
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (101, 'João Silva', 12);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (101, 'Beatriz Santos', 8);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (101, 'Lucas Pereira', 10);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (104, 'Marina Costa', 14);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (105, 'Gabriel Oliveira', 7);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (106, 'Larissa Lima', 9);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (107, 'Renato Souza', 13);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (108, 'Camila Almeida', 11);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (109, 'Victor Mendes', 15);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (110, 'Sofia Rocha', 10);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (111, 'Diego Nogueira', 8);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (112, 'Julia Tavares', 9);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (113, 'Bruno Fernandes', 12);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (114, 'Isabela Ribeiro', 7);
+INSERT INTO Dependente (cpf_codependente, nome, idade) VALUES (114, 'Matheus Martins', 14);
+
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (101, 102, 10001);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (101, 103, 10002);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (101, 104, 10003);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (101, 105, 10004);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (105, 106, 10005);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (106, 107, 10006);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (107, 108, 10007);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (108, 109, 10008);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (109, 110, 10009);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (110, 111, 10010);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (111, 112, 10011);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (111, 113, 10012);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (111, 114, 10013);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (111, 115, 10014);
+INSERT INTO Transfere (cpf_transferidor, cpf_receptor, numero_transferencia) VALUES (115, 101, 10015);
+
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (1, 1, 10);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (2, 2, 12);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (3, 3, 14);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (4, 4, 16);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (5, 5, 18);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (6, 6, 20);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (7, 7, 22);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (8, 8, 10);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (9, 9, 12);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (10, 10, 14);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (11, 11, 10);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (12, 12, 16);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (13, 13, 15);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (14, 14, 16);
+INSERT INTO Reserva (id_reserva, id_pacote, horario) VALUES (15, 15, 16);
+
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (1, 1, 'Econômico', 'Gol');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (2, 2, 'Executivo', 'LATAM');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (3, 3, 'Econômico', 'Azul');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (4, 4, 'Primeira Classe', 'Emirates');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (5, 5, 'Econômico', 'Air France');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (6, 6, 'Executivo', 'British Airways');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (7, 7, 'Primeira Classe', 'Qatar Airways');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (8, 8, 'Econômico', 'United Airlines');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (9, 9, 'Executivo', 'Delta');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (10, 10, 'Primeira Classe', 'Singapore Airlines');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (11, 11, 'Econômico', 'Air Canada');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (12, 12, 'Executivo', 'Turkish Airlines');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (13, 13, 'Primeira Classe', 'Japan Airlines');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (14, 14, 'Econômico', 'Alaska Airlines');
+INSERT INTO Aero (id_reserva, num_assento, tipo_assento, campanhia_aerea) VALUES (15, 15, 'Executivo', 'KLM');
+
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (1, 'Copacabana, Rio de Janeiro');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (2, 'Praça do Comércio, Lisboa');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (3, 'Central Park, Nova York');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (4, 'Torre Eiffel, Paris');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (5, 'Ponte de Londres, Londres');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (6, 'Cataratas do Iguaçu, Foz do Iguaçu');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (7, 'Templo de Kinkaku-ji, Kyoto');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (8, 'Plaza Mayor, Madrid');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (9, 'Machu Picchu, Peru');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (10, 'Coliseu, Roma');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (11, 'Alhambra, Granada');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (12, 'Bondinho do Pão de Açúcar, Rio de Janeiro');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (13, 'Jardins de Versailles, Paris');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (14, 'Parque Nacional Banff, Canadá');
+INSERT INTO Passeio (id_reserva, local_saida) VALUES (15, 'Grande Muralha da China, Pequim');
+
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (1, 'Rio de Janeiro', 'Hotel Copacabana Palace');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (2, 'Lisboa', 'Hotel Bairro Alto');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (3, 'Nova York', 'The Plaza Hotel');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (4, 'Paris', 'Le Meurice');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (5, 'Londres', 'The Ritz London');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (6, 'Foz do Iguaçu', 'Belmond Hotel das Cataratas');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (7, 'Kyoto', 'The Ritz-Carlton, Kyoto');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (8, 'Madrid', 'Hotel Ritz Madrid');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (9, 'Peru', 'Hotel Monasterio, Cusco');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (10, 'Roma', 'Hotel de Russie');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (11, 'Granada', 'Parador de Granada');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (12, 'Rio de Janeiro', 'Hotel Fasano');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (13, 'Paris', 'Hotel Ritz Paris');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (14, 'Canadá', 'Fairmont Banff Springs');
+INSERT INTO Hospedagem (id_reserva, local, nome) VALUES (15, 'Pequim', 'The Peninsula Beijing');
